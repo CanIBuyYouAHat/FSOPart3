@@ -1,7 +1,8 @@
+require('dotenv').config()
 const mongoose = require('mongoose');
 
 // const password = process.argv[2];
-`mongodb+srv://admin:${password}@premiumplus.m3e2rxl.mongodb.net/?retryWrites=true&w=majority`;
+// `mongodb+srv://admin:${password}@premiumplus.m3e2rxl.mongodb.net/?retryWrites=true&w=majority`;
 
 const url = process.env.MONGODB_URI
 
