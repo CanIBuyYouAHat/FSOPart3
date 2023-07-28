@@ -1,7 +1,8 @@
+require('dotenv').config()
 const express = require('express')
 var morgan = require('morgan')
 const cors = require('cors')
-
+const Person = require('./models/person')
 const app = express()
 
 morgan.token('content', function (request) { return JSON.stringify(request.body) })
@@ -10,7 +11,6 @@ app.use(cors())
 app.use(express.static('dist'))
 app.use(express.json())
 app.use(morgan(':method :url :status :res[content-length] - :response-time ms :content'))
-
 
 
 let persons = [
@@ -46,7 +46,9 @@ app.get('/', (request, response) => {
 })
 
 app.get('/api/persons', (request, response) => {
-  response.json(persons)
+    Person.find({}).then(persons => {
+        response.json(persons)
+    })
 })
 
 app.get('/api/persons/:id', (request, response) => {
@@ -69,15 +71,17 @@ app.delete('/api/persons/:id', (request, response) => {
 
 app.get('/info', (request, response) => {
     const today = new Date()
-    response.send(`<p>Phonebook has info for ${persons.length} people </p> <p>${today}</p>`)
+    Person.find({}.then(result => {
+        response.send(`<p>Phonebook has info for ${result.length} people </p> <p>${today}</p>`)
+    }))
 })
 
-const generateID = () => {
-    const maxId = persons.length > 0 
-    ? Math.max(...persons.map(person => person.id)) 
-    : 0
-    return maxId + 1
-}
+// const generateID = () => {
+//     const maxId = persons.length > 0 
+//     ? Math.max(...persons.map(person => person.id)) 
+//     : 0
+//     return maxId + 1
+// }
 
 app.post('/api/persons', (request, response) => {
     const body = request.body
@@ -97,18 +101,20 @@ app.post('/api/persons', (request, response) => {
         })
     }
 
-    const person = {
+    const person = new Person({
         name: body.name,
         number: body.number,
-        id: generateID(),
-    }
+    })
 
-    persons = [...persons, person]
-    response.json(person)
+    person.save().then(result => {
+        console.log(result)
+        response.json(person)
+    })
+    
 })
 
 // 
-const PORT = process.env.PORT || 3001
+const PORT = process.env.PORT 
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`)
 })
