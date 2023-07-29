@@ -15,7 +15,7 @@ const errorHandler = (error, request, response, next) => {
     console.log(error)
 
     if (error.name === 'CastError') {
-        return response.status(400).send({ error: 'malformatted id'})
+        return response.status(400).send({ error: 'malformatted id' })
     } else if (error.name === 'ValidationError') {
         return response.status(400).json({ error: error.message })
     }
@@ -25,36 +25,36 @@ const errorHandler = (error, request, response, next) => {
 
 app.use(errorHandler)
 
-let persons = [
-    { 
-      "id": 1,
-      "name": "Arto Hellas", 
-      "number": "040-123456"
-    },
-    { 
-      "id": 2,
-      "name": "Ada Lovelace", 
-      "number": "39-44-5323523"
-    },
-    { 
-      "id": 3,
-      "name": "Dan Abramov", 
-      "number": "12-43-234345"
-    },
-    { 
-      "id": 4,
-      "name": "Mary Poppendieck", 
-      "number": "39-23-6423122"
-    },
-    {
-        "id": 5,
-        "name": "Balls Mcgee",
-        "number": "1-4"
-    }
-]
+// let persons = [
+//     {
+//       "id": 1,
+//       "name": "Arto Hellas",
+//       "number": "040-123456"
+//     },
+//     {
+//       "id": 2,
+//       "name": "Ada Lovelace",
+//       "number": "39-44-5323523"
+//     },
+//     {
+//       "id": 3,
+//       "name": "Dan Abramov",
+//       "number": "12-43-234345"
+//     },
+//     {
+//       "id": 4,
+//       "name": "Mary Poppendieck",
+//       "number": "39-23-6423122"
+//     },
+//     {
+//         "id": 5,
+//         "name": "Balls Mcgee",
+//         "number": "1-4"
+//     }
+// ]
 
 app.get('/', (request, response) => {
-  response.send('<h1>Hello World!</h1>')
+    response.send('<h1>Hello World!</h1>')
 })
 
 app.get('/api/persons', (request, response) => {
@@ -65,23 +65,24 @@ app.get('/api/persons', (request, response) => {
 
 app.get('/api/persons/:id', (request, response, next) => {
     Person.findById(request.params.id)
-    .then(result => {
-        console.log(result)
-        if (result) {
-            response.json(result)
-        } else {
-            response.status(404).end()
-        }
-    })
-    .catch(err => next(err))
+        .then(result => {
+            console.log(result)
+            if (result) {
+                response.json(result)
+            } else {
+                response.status(404).end()
+            }
+        })
+        .catch(err => next(err))
 })
 
 app.delete('/api/persons/:id', (request, response, next) => {
     Person.findByIdAndRemove(request.params.id)
-    .then(result => {
-        response.status(204).end()
-    })
-    .catch(err =>next(err))
+        // eslint-disable-next-line no-unused-vars
+        .then(result => {
+            response.status(204).end()
+        })
+        .catch(err => next(err))
 })
 
 app.get('/info', (request, response) => {
@@ -92,8 +93,8 @@ app.get('/info', (request, response) => {
 })
 
 // const generateID = () => {
-//     const maxId = persons.length > 0 
-//     ? Math.max(...persons.map(person => person.id)) 
+//     const maxId = persons.length > 0
+//     ? Math.max(...persons.map(person => person.id))
 //     : 0
 //     return maxId + 1
 // }
@@ -123,12 +124,11 @@ app.post('/api/persons', (request, response, next) => {
     })
 
     person.save()
-    .then(savedPerson => {
-        console.log(savedPerson)
-        response.json(savedPerson)
-    })
-    .catch(err => next(err))
-    
+        .then(savedPerson => {
+            console.log(savedPerson)
+            response.json(savedPerson)
+        })
+        .catch(err => next(err))
 })
 
 app.put('/api/persons/:id', (request, response, next) => {
@@ -139,15 +139,15 @@ app.put('/api/persons/:id', (request, response, next) => {
         number: body.number
     }
 
-    Person.findByIdAndUpdate(request.params.id, person, { new: true, runValidators: true, context: 'query'})
-    .then(updated => {
-        response.json(updated)
-    })
-    .catch(err => next(err))
+    Person.findByIdAndUpdate(request.params.id, person, { new: true, runValidators: true, context: 'query' })
+        .then(updated => {
+            response.json(updated)
+        })
+        .catch(err => next(err))
 })
 
-// 
-const PORT = process.env.PORT 
+
+const PORT = process.env.PORT
 app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`)
+    console.log(`Server running on port ${PORT}`)
 })
